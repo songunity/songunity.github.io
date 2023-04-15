@@ -1,2 +1,2 @@
 # songunity.github.io
-blos
+blog
