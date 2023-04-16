@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://songunity.github.io/categories/</loc>
+    <loc>https://songunity.github.io/post/my-first-post/</loc>
+    <lastmod>2023-04-15T14:04:09+08:00</lastmod>
   </url><url>
     <loc>https://songunity.github.io/</loc>
+    <lastmod>2023-04-15T14:04:09+08:00</lastmod>
+  </url><url>
+    <loc>https://songunity.github.io/post/</loc>
+    <lastmod>2023-04-15T14:04:09+08:00</lastmod>
+  </url><url>
+    <loc>https://songunity.github.io/categories/</loc>
   </url><url>
     <loc>https://songunity.github.io/tags/</loc>
   </url>
