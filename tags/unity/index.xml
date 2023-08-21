@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>unity on Song-Blog‘s</title>
-    <link>https://songunity.github.io/tags/unity/</link>
-    <description>Recent content in unity on Song-Blog‘s</description>
+    <title>unity on 主页</title>
+    <link>/tags/unity/</link>
+    <description>Recent content in unity on 主页</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Apr 2023 14:04:09 +0800</lastBuildDate><atom:link href="https://songunity.github.io/tags/unity/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 15 Apr 2023 14:04:09 +0800</lastBuildDate><atom:link href="/tags/unity/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>实现魔兽争霸中建筑放置的地形检测，确定放置位置</title>
-      <link>https://songunity.github.io/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</link>
+      <link>/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</link>
       <pubDate>Sat, 15 Apr 2023 14:04:09 +0800</pubDate>
       
-      <guid>https://songunity.github.io/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</guid>
+      <guid>/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</guid>
       <description>实现魔兽争霸中建筑放置的地形检测，确定放置位置 实现类似下面的效果，可以看到建筑有一部分是放在错误的位置上了，这时候就需要显示为红色，并且此时不可以放置 实现思路 首先要知道，此时建筑所在的地形是不是可以放置，这时可以使用射线，从摄像机向鼠标方向发射，但只是这一条射线的话，不能确定建筑的是否完全在可以放置地形上面。
 那如何实现对建筑面积的监控呢？这里在建筑的中心点位置和四个角向下发射射线，实现建筑区域面积的检测，从而实现放置位置的限制。
 最后也要使用碰撞器进行碰撞检测，查看是否有物体在建筑内。这样通过射线和碰撞双重检测，实现上面的效果。

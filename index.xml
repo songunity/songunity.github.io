@@ -1,163 +1,24 @@
-<?xml-stylesheet href="/rss.xsl" type="text/xsl"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Song-Blog‘s</title>
-    <link>https://songunity.github.io/</link>
-    <description>Recent content on Song-Blog‘s</description>
+    <title>Home on 主页</title>
+    <link>/</link>
+    <description>Recent content in Home on 主页</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Apr 2023 14:04:09 +0800</lastBuildDate>
-    
-        <atom:link href="https://songunity.github.io/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    
-        <item>
-        <title>实现魔兽争霸中建筑放置的地形检测，确定放置位置</title>
-        <link>https://songunity.github.io/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</link>
-        <pubDate>Sat, 15 Apr 2023 14:04:09 +0800</pubDate>
-        
-        <guid>https://songunity.github.io/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</guid>
-        <description>Song-Blog‘s https://songunity.github.io/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/ -&lt;h1 id=&#34;实现魔兽争霸中建筑放置的地形检测确定放置位置&#34;&gt;实现魔兽争霸中建筑放置的地形检测，确定放置位置&lt;/h1&gt;
-&lt;p&gt;实现类似下面的效果，可以看到建筑有一部分是放在错误的位置上了，这时候就需要显示为红色，并且此时不可以放置
-&lt;img src=&#34;https://sgblogimgs.oss-cn-beijing.aliyuncs.com/blogimgs/image-20210104231232388.png&#34; alt=&#34;image-20210104231232388&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;实现思路&#34;&gt;实现思路&lt;/h3&gt;
-&lt;p&gt;首先要知道，此时建筑所在的地形是不是可以放置，这时可以使用射线，从摄像机向鼠标方向发射，但只是这一条射线的话，不能确定建筑的是否完全在可以放置地形上面。&lt;/p&gt;
-&lt;p&gt;那如何实现对建筑面积的监控呢？这里在建筑的中心点位置和四个角向下发射射线，实现建筑区域面积的检测，从而实现放置位置的限制。&lt;/p&gt;
-&lt;p&gt;最后也要使用碰撞器进行碰撞检测，查看是否有物体在建筑内。这样通过射线和碰撞双重检测，实现上面的效果。&lt;/p&gt;
-&lt;h3 id=&#34;最终效果&#34;&gt;最终效果&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://sgblogimgs.oss-cn-beijing.aliyuncs.com/blogimgs/tank.gif&#34; alt=&#34;tank&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;实现代码&#34;&gt;实现代码&lt;/h3&gt;
-&lt;p&gt;这里把代码贴出来&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; System.Collections;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; System.Collections.Generic;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; UnityEngine;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; UniRx;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; UniRx.Triggers;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; UnityEngine.EventSystems;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;namespace&lt;/span&gt; TowerDefense
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;BuildRayController&lt;/span&gt; : MonoBehaviour
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; BoxCollider boxCollider;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; Vector3 currentPos;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; MeshRenderer meshRenderer;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isNewPos;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isTestCollision;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isTrigger;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; CanPlace{ &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isRun=&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Awake()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            boxCollider = transform.GetComponent&amp;lt;BoxCollider&amp;gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            meshRenderer = transform.GetComponentInChildren&amp;lt;MeshRenderer&amp;gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Update()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (!isRun)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;//鼠标没有在UI上，发射射线，移动时更新位置，并且提示进行检测&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (!EventSystem.current.IsPointerOverGameObject())
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                RaycastHit raycastHit;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (Physics.Raycast(ray, &lt;span style=&#34;color:#66d9ef&#34;&gt;out&lt;/span&gt; raycastHit, Mathf.Infinity, LayerMask.GetMask(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PlacementArea&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ground&amp;#34;&lt;/span&gt;)))
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    Debug.DrawLine(ray.origin, raycastHit.point, Color.red);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; temp = raycastHit.point;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    temp.y += &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01f&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    transform.position = temp;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (currentPos != temp)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        isNewPos = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    currentPos = temp;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;//如果是新的位置，进行检测&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (isNewPos)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (!CheckOnMap())
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#75715e&#34;&gt;//没有通过检测，提示框直接变红&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    meshRenderer.material.color = Color.red;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    isTestCollision = &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    Debug.Log(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;没有通过&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (!isTestCollision)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    isTrigger = &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    isTestCollision = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    Debug.Log(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;碰撞检测&amp;#34;&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#75715e&#34;&gt;//最终判断碰撞器内是否有物体，控制显示框颜色&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    isTestCollision = &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    meshRenderer.material.color = isTrigger ? Color.red : Color.green;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    CanPlace = !isTrigger;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;//使用碰撞进行测试，用来检测建筑内是否存在其他物体&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; OnTriggerStay(Collider other)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(isRun)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                isTrigger = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;//用来检测建筑区域内是否在可以放置的层上&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; CheckOnMap()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            isNewPos = &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; ray = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Ray();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;//第一个检测点是建筑中心，射线位置也为中心，向下发射&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ray.origin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Vector3(transform.position.x + boxCollider.center.x, transform.position.y + &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.z + boxCollider.center.z);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ray.direction = Vector3.down;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            RaycastHit[] hits;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; count = &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (count &amp;gt;=&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                hits = Physics.RaycastAll(ray, Mathf.Infinity);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;//Debug.DrawLine(ray.origin, hits[0].point, Color.red);&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isHitTerrain = &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;foreach&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; item &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; hits)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (item.collider.gameObject.layer == LayerMask.NameToLayer(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PlacementArea&amp;#34;&lt;/span&gt;))
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        isHitTerrain = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (!isHitTerrain)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                count--;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;//这里在测试完中心点后，逐一对4个角进行测试&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; (count)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        ray.origin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Vector3(transform.position.x+ boxCollider.center.x + boxCollider.size.x * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.y + &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.z + boxCollider.center.z + boxCollider.size.z * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        ray.origin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Vector3(transform.position.x + boxCollider.center.x + boxCollider.size.x * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.y + &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.z + boxCollider.center.z - boxCollider.size.z * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        ray.origin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Vector3(transform.position.x + boxCollider.center.x - boxCollider.size.x * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.y + &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.z + boxCollider.center.z + boxCollider.size.z * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        ray.origin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Vector3(transform.position.x + boxCollider.center.x - boxCollider.size.x * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.y + &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;, transform.position.z + boxCollider.center.z - boxCollider.size.z * &lt;span style=&#34;color:#ae81ff&#34;&gt;0.5f&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://songunity.github.io/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/ - </description>
-        </item>
-    
+    <lastBuildDate>Sat, 15 Apr 2023 14:04:09 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>实现魔兽争霸中建筑放置的地形检测，确定放置位置</title>
+      <link>/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</link>
+      <pubDate>Sat, 15 Apr 2023 14:04:09 +0800</pubDate>
+      
+      <guid>/posts/unity%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E9%AD%94%E5%85%BD%E4%BA%89%E9%9C%B8%E4%B8%AD%E5%BB%BA%E7%AD%91%E6%94%BE%E7%BD%AE%E7%9A%84%E5%9C%B0%E5%BD%A2%E6%A3%80%E6%B5%8B%E7%A1%AE%E5%AE%9A%E6%94%BE%E7%BD%AE%E4%BD%8D%E7%BD%AE/</guid>
+      <description>实现魔兽争霸中建筑放置的地形检测，确定放置位置 实现类似下面的效果，可以看到建筑有一部分是放在错误的位置上了，这时候就需要显示为红色，并且此时不可以放置 实现思路 首先要知道，此时建筑所在的地形是不是可以放置，这时可以使用射线，从摄像机向鼠标方向发射，但只是这一条射线的话，不能确定建筑的是否完全在可以放置地形上面。
+那如何实现对建筑面积的监控呢？这里在建筑的中心点位置和四个角向下发射射线，实现建筑区域面积的检测，从而实现放置位置的限制。
+最后也要使用碰撞器进行碰撞检测，查看是否有物体在建筑内。这样通过射线和碰撞双重检测，实现上面的效果。
+最终效果 实现代码 这里把代码贴出来
+using System.Collections; using System.Collections.Generic; using UnityEngine; using UniRx; using UniRx.Triggers; using UnityEngine.EventSystems; namespace TowerDefense { public class BuildRayController : MonoBehaviour { private BoxCollider boxCollider; private Vector3 currentPos; private MeshRenderer meshRenderer; private bool isNewPos; private bool isTestCollision; private bool isTrigger; public bool CanPlace{ get; private set; } public bool isRun=true; private void Awake() { boxCollider = transform.GetComponent&amp;lt;BoxCollider&amp;gt;(); meshRenderer = transform.GetComponentInChildren&amp;lt;MeshRenderer&amp;gt;(); } private void Update() { if (!</description>
+    </item>
     
   </channel>
-</rss> 
+</rss>
